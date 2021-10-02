@@ -54,45 +54,6 @@ console.log(sortFiles());
 
 
 
-    // fs.readdir(dirPathBoys, (err, files) => {
-    //     if(err) {
-    //         console.log(err)
-    //         return;
-    //     }
-    //     files.forEach(file => {
-    //         const sortPath = path.join(dirPathBoys, file)
-    //         const girlsPath = path.join(dirPathGirls, file)
-    //
-    //        fs.readFile(sortPath,'UTF-8',(err2, data) => {
-    //             if(err2) {
-    //                 console.log(err2)
-    //             } else {
-    //                 console.log(data);
-    //             }
-    //         })
-    //
-    //         // fs.stat(sortPath, (e, stats) => {
-    //         //     if(e) {
-    //         //         console.log(e)
-    //         //         return;
-    //         //     }
-    //         //     console.log(stats);
-    //         //
-    //         //     if (stats.isFile()) {
-    //         //         fs.rename(sortPath, girlsPath, err1 => {
-    //         //             if(err1) {
-    //         //                 console.log(err1)
-    //         //                 return;
-    //         //             }
-    //         //             console.log(file, 'rename complete');
-    //         //
-    //         //         })
-    //         //     }
-    //         // })
-    //
-    //     })
-    // })
-
 
 
 
