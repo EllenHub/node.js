@@ -1,10 +1,8 @@
 // LESSON 1 (fs)
 // sort out files by gender from one folder to another
 
-
 const fs = require('fs');
 const path = require('path');
-
 
 const dirPathBoys = path.join(__dirname, 'lesson1', 'homework', 'boys');
 const dirPathGirls = path.join(__dirname, 'lesson1', 'homework', 'girls')
@@ -50,11 +48,3 @@ function sortFiles(dirPathBoys){
 }
 
 console.log(sortFiles());
-
-
-
-
-
-
-
-
