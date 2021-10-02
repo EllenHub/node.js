@@ -30,6 +30,7 @@ fs.mkdir(dirPathGirls, {recursive: true}, err => {
         console.log(err);
     }
 });
+
 function sortFiles(readPath, gender, moveToNewPath) {
     fs.readdir(readPath, (err, files) => {
         if (err) {
@@ -60,5 +61,14 @@ function sortFiles(readPath, gender, moveToNewPath) {
         });
     });
 }
+
 sortFiles(dirPathBoys, "female", dirPathGirls);
 sortFiles(dirPathGirls, "male", dirPathBoys);
+
+
+
+
+
+
+
+
