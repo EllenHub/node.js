@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const db = require('../db/users')
+const db = require('../db/users');
 
 const filePath = path.join(__dirname, '../db', 'users.json.txt');
 
