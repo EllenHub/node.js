@@ -1,41 +1,46 @@
-const  {readUsers,writeData}= require ('../services/user.services')
+const { readUsers, writeData } = require ('../services/user.services')
 
 module.exports = {
-    getUsers: (req, res) => {
+    getUsers: async (req, res) => {
+        const objData = await readUsers();
+        res.json(objData);
+    },
 
-    },
-    getUserById: (req, res) => {
+    getUserById: async (req, res) => {
         const {user_id} = req.params;
-        // const user = db[user_id - 1]
-        // if (!user) {
-        //     res.status(404).json('User is not found')
-        //     return;
-        // }
-        res.json('getUser')
+        const users = await readUsers();
+        const user = users[user_id - 1];
+
+        if(!user) {
+            res.status(404).json('User is not found');
+            return;
+        }
+        res.json(user);
     },
+
     createUser: async (req, res) => {
           const user = req.body;
-
           const objData = await readUsers();
-console.log(objData);
-          objData.push({...user, id: objData.length + 1});
-            await writeData(objData)
 
-            res.json('New user has been created', objData)
+          objData.push({...user, id: objData.length + 1});
+            await writeData(objData);
+            res.json('New user has been created');
         },
 
     updateUser: (req, res) => {
-        res.json('Update a user')
+        res.json('Update a user');
     },
-    deleteUser: (req, res) => {
-        // const {user_id} = req.params
-        // const user = db[user_id - 1]
-        //
-        // if (user !== -1) {
-        //     db.splice(user, 1);
-        //     res.status(204).send();
-        // } else {
-        //     res.status(404).send();
-        // }
+
+    deleteUser: async (req, res) => {
+        const {user_id} = req.params;
+        const users = await readUsers();
+        const user = users[user_id - 1];
+
+        if (user !== -1) {
+            users.splice(user, 1);
+           return res.json('User Deleted');
+        } else {
+            res.json('User NOT Found');
+        }
     }
 };
