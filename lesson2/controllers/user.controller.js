@@ -36,7 +36,6 @@ module.exports = {
             });
             res.json('New user created')
         });
-
     },
     updateUser: (req, res) => {
         res.json('Update a user')
