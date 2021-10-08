@@ -5,13 +5,9 @@ module.exports = {
         try {
             const {email, password} = req.body;
 
-            const userByEmail = await User.findOne({email});
+            const userByEmail = await User.findOne({email, password});
 
-            if(!userByEmail) {
-                throw new Error('User does not exist');
-            }
-
-            if(userByEmail.password !== password) {
+            if(!userByEmail ) {
                 throw new Error('User does not exist');
             }
 

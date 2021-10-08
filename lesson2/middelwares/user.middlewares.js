@@ -16,5 +16,23 @@ module.exports = {
             res.json(e.message);
         }
 
+    },
+
+    isUserIdPresent: async (req,res,next) => {
+        try {
+            const { user_id } = req.params;
+
+            const userId= await User.findById(user_id);
+
+            if(!userId) {
+                throw new Error ('User not found');
+            }
+
+            req.user = userId;
+
+            next();
+        } catch (e) {
+            res.json(e.message);
+        }
     }
 };

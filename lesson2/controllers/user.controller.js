@@ -3,39 +3,39 @@ const User = require('../db/User');
 module.exports = {
     getUsers: async (req, res) => {
         try {
-            const users = await User.find();
+            const users = await User.find(req.body);
 
             res.json(users);
         } catch (e) {
-            res.json(e);
+            res.json(e.message);
         }
     },
 
-    getUserById: async (req, res) => {
-        const {user_id} = req.params;
+    getUserById: (req, res) => {
+        try {
+            const {user} = req;
 
-        const user = await User.findById(user_id);
-
-        res.json(user);
+            res.json(user);
+        } catch (e) {
+            res.json(e.message);
+        }
     },
 
     createUser: async (req, res) => {
         try {
             const newUser = await User.create(req.body);
-
             res.json(newUser);
         } catch (err) {
-            res.json(err);
+            res.json(err.message);
         }
     },
 
-    updateUser: (req, res) => {
-        res.json('Update a user');
-    },
-
-    deleteUser: async (req, res) => {
-        const deleteUser = await User.deleteOne(req.body);
-
-        res.json(deleteUser);
+    deleteUser: (req, res) => {
+        try{
+            res.json(req.user);
+        } catch (e) {
+            res.json(e.message);
+        }
     }
+
 };
