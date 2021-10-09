@@ -32,11 +32,11 @@ module.exports = {
 
     deleteUser: async (req, res) => {
         try{
-            const {user} = req;
+            const { user_id } = req.params;
 
-            const deleteUser = await User.deleteOne(user);
+            await User.findByIdAndRemove(user_id);
 
-            res.json(deleteUser);
+            res.sendStatus(204);
         } catch (e) {
             res.json(e.message);
         }
