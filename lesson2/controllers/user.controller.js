@@ -3,7 +3,7 @@ const User = require('../db/User');
 module.exports = {
     getUsers: async (req, res) => {
         try {
-            const users = await User.find(req.body);
+            const users = await User.find();
 
             res.json(users);
         } catch (e) {
@@ -30,9 +30,13 @@ module.exports = {
         }
     },
 
-    deleteUser: (req, res) => {
+    deleteUser: async (req, res) => {
         try{
-            res.json(req.user);
+            const {user} = req;
+
+            const deleteUser = await User.deleteOne(user);
+
+            res.json(deleteUser);
         } catch (e) {
             res.json(e.message);
         }

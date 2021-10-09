@@ -1,4 +1,3 @@
-
 module.exports = {
     userLogination: (req, res) => {
         try {

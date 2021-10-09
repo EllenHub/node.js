@@ -1,3 +1,5 @@
+const {Types}= require('mongoose');
+
 const User = require('../db/User');
 
 module.exports = {
@@ -21,7 +23,10 @@ module.exports = {
     isUserIdPresent: async (req,res,next) => {
         try {
             const { user_id } = req.params;
-
+            const isValid = Types.ObjectId.isValid(user_id);
+            if(!isValid) {
+                throw new Error('Id is not valid');
+            }
             const userId= await User.findById(user_id);
 
             if(!userId) {
@@ -29,7 +34,6 @@ module.exports = {
             }
 
             req.user = userId;
-
             next();
         } catch (e) {
             res.json(e.message);
