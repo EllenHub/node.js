@@ -17,7 +17,6 @@ module.exports = {
         } catch (e) {
             res.json(e.message);
         }
-
     },
 
     isUserIdPresent: async (req,res,next) => {
