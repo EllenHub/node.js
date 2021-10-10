@@ -1,6 +1,8 @@
-const {Types}= require('mongoose');
+const {Types} = require('mongoose');
 
 const User = require('../db/User');
+const userValidator = require('../validators/user.validator');
+const userUtil = require('../utils/user.util');
 
 module.exports = {
     createUserMiddleware: async (req, res, next) => {
@@ -19,23 +21,59 @@ module.exports = {
         }
     },
 
-    isUserIdPresent: async (req,res,next) => {
+    isUserIdPresent: async (req, res, next) => {
         try {
-            const { user_id } = req.params;
+            const {user_id} = req.params;
+
             const isValid = Types.ObjectId.isValid(user_id);
-            if(!isValid) {
+
+            if (!isValid) {
                 throw new Error('Id is not valid');
             }
-            const userId= await User.findById(user_id);
 
-            if(!userId) {
-                throw new Error ('User not found');
+            const userId = await User.findById(user_id).lean();
+
+            if (!userId) {
+                throw new Error('User not found');
             }
 
-            req.user = userId;
+            const normalizedUser = userUtil.userNormalizator(userId);
+
+            req.user = normalizedUser;
+            next();
+        } catch (e) {
+            res.json(e.message);
+        }
+    },
+
+    isUserBodyValid: (req, res, next) => {
+        try {
+            const {error, value} = userValidator.createUserValidator.validate(req.body);
+
+            if (error) {
+                throw new Error(error.details[0].message);
+            }
+
+            req.body = value;
+            next();
+        } catch (e) {
+            res.json(e.message);
+        }
+    },
+
+    updateUserBodyValidation: (req, res, next) => {
+        try{
+            const {error, value} = userValidator.updateUserValidator.validate(req.body);
+
+            if(error) {
+                throw new Error (error.details[0].message);
+            }
+
+            req.body = value;
             next();
         } catch (e) {
             res.json(e.message);
         }
     }
 };
+

@@ -3,6 +3,9 @@ const router = require('express').Router();
 const authController = require('../controllers/auth.controller');
 const authMiddleware = require('../middelwares/auth.middlewares');
 
-router.post('/login', authMiddleware.isEmailValid, authController.userLogination);
+router.post('/login',
+    authMiddleware.validateLoginData,
+    authMiddleware.isEmailValid,
+    authController.userLogination);
 
 module.exports = router;
