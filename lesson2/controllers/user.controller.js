@@ -1,12 +1,15 @@
 const User = require('../db/User');
 const passwordService = require('../services/password.service');
+const { userNormalizator } = require('../utils/user.util');
 
 module.exports = {
     getUsers: async (req, res) => {
         try {
             const users = await User.find();
 
-            res.json(users);
+            const usersToReturn = users.map((item) => userNormalizator(item));
+
+            res.json(usersToReturn);
         } catch (e) {
             res.json(e.message);
         }
@@ -24,11 +27,15 @@ module.exports = {
 
     createUser: async (req, res) => {
         try {
-            const hashedPassword = await passwordService.hash(req.body.password);
+            const {password} = req.body;
+
+            const hashedPassword = await passwordService.hash(password);
 
             const newUser = await User.create({...req.body, password: hashedPassword});
 
-            res.json(newUser);
+            const normalizedNewUser = userNormalizator(newUser);
+
+            res.json(normalizedNewUser);
         } catch (err) {
             res.json(err.message);
         }
@@ -37,11 +44,14 @@ module.exports = {
     updateUser: async (req, res) => {
         try {
             const {user_id} = req.params;
+
             const newData = req.body;
 
             const updatedUser = await User.findByIdAndUpdate(user_id, newData);
 
-            res.json(updatedUser);
+            const userToUpdate = userNormalizator(updatedUser);
+
+            res.json(userToUpdate);
         } catch (e) {
             res.json(e.message);
         }

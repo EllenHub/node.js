@@ -5,6 +5,8 @@ module.exports = {
             '__v'
         ];
 
+        userToNormalize = userToNormalize.toObject();
+
         fieldsToRemove.forEach((field) => {
             delete userToNormalize[field];
         });

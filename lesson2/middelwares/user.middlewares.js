@@ -2,7 +2,7 @@ const {Types} = require('mongoose');
 
 const User = require('../db/User');
 const userValidator = require('../validators/user.validator');
-const userUtil = require('../utils/user.util');
+const { userNormalizator } = require('../utils/user.util');
 
 module.exports = {
     createUserMiddleware: async (req, res, next) => {
@@ -31,13 +31,13 @@ module.exports = {
                 throw new Error('Id is not valid');
             }
 
-            const userId = await User.findById(user_id).lean();
+            const userId = await User.findById(user_id);
 
             if (!userId) {
                 throw new Error('User not found');
             }
 
-            const normalizedUser = userUtil.userNormalizator(userId);
+            const normalizedUser = userNormalizator(userId);
 
             req.user = normalizedUser;
             next();
@@ -62,11 +62,11 @@ module.exports = {
     },
 
     updateUserBodyValidation: (req, res, next) => {
-        try{
+        try {
             const {error, value} = userValidator.updateUserValidator.validate(req.body);
 
-            if(error) {
-                throw new Error (error.details[0].message);
+            if (error) {
+                throw new Error(error.details[0].message);
             }
 
             req.body = value;
