@@ -1,6 +1,7 @@
 const User = require('../db/User');
 const authValidator = require('../validators/auth.validator');
 const passwordService = require('../services/password.service');
+const {userNormalizator} = require('../utils/user.util');
 
 module.exports = {
     isEmailValid: async (req, res, next) => {
@@ -15,7 +16,9 @@ module.exports = {
 
             await passwordService.compare(password, userByEmail.password);
 
-            req.user = userByEmail;
+            const normalizedUser = userNormalizator(userByEmail);
+
+            req.user = normalizedUser;
             next();
         } catch (e) {
             res.json(e.message);
@@ -27,7 +30,7 @@ module.exports = {
             const {error, value} = authValidator.loginValidator.validate(req.body);
 
             if (error) {
-                res.json('Email or password is wrong');
+                throw new Error ('Email or password is wrong');
             }
 
             req.body = value;
