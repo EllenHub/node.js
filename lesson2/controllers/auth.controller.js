@@ -1,11 +1,11 @@
 module.exports = {
-    userLogination: (req, res) => {
+    userLogination: (req, res, next) => {
         try {
             const {user} = req;
 
             res.json(user);
-        } catch (er) {
-            res.json(er.message);
+        } catch (e) {
+            next(e);
         }
     },
 };

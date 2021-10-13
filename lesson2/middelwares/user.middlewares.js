@@ -1,8 +1,9 @@
 const {Types} = require('mongoose');
 
 const User = require('../db/User');
-const userValidator = require('../validators/user.validator');
-const { userNormalizator } = require('../utils/user.util');
+const ErrorHandler = require("../errors/ErrorHandler");
+const {userValidator} = require('../validators/');
+const {userNormalizator} = require('../utils/user.util');
 
 module.exports = {
     createUserMiddleware: async (req, res, next) => {
@@ -12,12 +13,12 @@ module.exports = {
             const userEmail = await User.findOne({email});
 
             if (userEmail) {
-                throw new Error('This email already exists');
+                throw new ErrorHandler('This email is already in use', 409);
             }
 
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
@@ -28,13 +29,13 @@ module.exports = {
             const isValid = Types.ObjectId.isValid(user_id);
 
             if (!isValid) {
-                throw new Error('Id is not valid');
+                throw new ErrorHandler('Id is not valid', 418);
             }
 
             const userId = await User.findById(user_id);
 
             if (!userId) {
-                throw new Error('User not found');
+                throw new ErrorHandler('User not found', 404);
             }
 
             const normalizedUser = userNormalizator(userId);
@@ -42,7 +43,7 @@ module.exports = {
             req.user = normalizedUser;
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
@@ -57,7 +58,7 @@ module.exports = {
             req.body = value;
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
@@ -72,7 +73,20 @@ module.exports = {
             req.body = value;
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
+        }
+    },
+    checkUserRole: (roleArr = []) => (req, res, next) => {
+        try {
+            const {role} = req.body;
+
+            if (!roleArr.includes(role)) {
+                throw new Error('Access denied');
+            }
+
+            next();
+        } catch (e) {
+            next(e);
         }
     }
 };

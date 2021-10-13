@@ -2,13 +2,15 @@
   "name": "node.js",
   "version": "1.0.0",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "express": "^4.17.1",
     "express-handlebars": "^5.3.4",
+    "joi": "^17.4.2",
     "mongoose": "^6.0.9",
-    "bcrypt": "^5.0.1",
-    "joi": "^17.4.2"
+    "pm2": "^5.1.2"
   },
   "devDependencies": {
+    "dotenv": "^10.0.0",
     "eslint": "^7.32.0",
     "eslint-plugin-import": "^2.24.2",
     "eslint-plugin-node": "^11.1.0",

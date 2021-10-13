@@ -1,7 +1,8 @@
 const router = require('express').Router();
 
-const userController = require('../controllers/user.controller');
-const userMiddleware = require('../middelwares/user.middlewares');
+const {ADMIN} = require("../consts/user-roles.enum");
+const { userController } = require('../controllers/');
+const { userMiddleware }= require('../middelwares/');
 
 router.get('/', userController.getUsers);
 router.post('/',
@@ -17,6 +18,7 @@ router.get('/:user_id',
     userMiddleware.isUserIdPresent,
     userController.getUserById);
 router.delete('/:user_id',
+    userMiddleware.checkUserRole([ADMIN]),
     userMiddleware.isUserIdPresent,
     userController.deleteUser);
 

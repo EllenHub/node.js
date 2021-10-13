@@ -1,6 +1,7 @@
 const User = require('../db/User');
-const authValidator = require('../validators/auth.validator');
+const {authValidator} = require('../validators/');
 const passwordService = require('../services/password.service');
+const ErrorHandler = require("../errors/ErrorHandler");
 const {userNormalizator} = require('../utils/user.util');
 
 module.exports = {
@@ -11,7 +12,7 @@ module.exports = {
             const userByEmail = await User.findOne({email});
 
             if (!userByEmail) {
-                throw new Error('User does not exist');
+                throw new ErrorHandler('User does not exist', 404);
             }
 
             await passwordService.compare(password, userByEmail.password);
@@ -21,7 +22,7 @@ module.exports = {
             req.user = normalizedUser;
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 
@@ -30,13 +31,13 @@ module.exports = {
             const {error, value} = authValidator.loginValidator.validate(req.body);
 
             if (error) {
-                throw new Error ('Email or password is wrong');
+                throw new ErrorHandler('Email or password is wrong', 401);
             }
 
             req.body = value;
             next();
         } catch (e) {
-            res.json(e.message);
+            next(e);
         }
     },
 };
