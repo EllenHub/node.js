@@ -1,9 +1,10 @@
-const {Types} = require('mongoose');
+const { Types } = require('mongoose');
 
 const User = require('../db/User');
 const ErrorHandler = require("../errors/ErrorHandler");
-const {userValidator} = require('../validators/');
-const {userNormalizator} = require('../utils/user.util');
+const { userNormalizator } = require('../utils/user.util');
+const { statusCodes } = require('../configs');
+const { statusMessage } = require('../configs');
 
 module.exports = {
     createUserMiddleware: async (req, res, next) => {
@@ -13,7 +14,7 @@ module.exports = {
             const userEmail = await User.findOne({email});
 
             if (userEmail) {
-                throw new ErrorHandler('This email is already in use', 409);
+                throw new ErrorHandler(statusMessage.existEmail, statusCodes.alreadyExists);
             }
 
             next();
@@ -29,13 +30,13 @@ module.exports = {
             const isValid = Types.ObjectId.isValid(user_id);
 
             if (!isValid) {
-                throw new ErrorHandler('Id is not valid', 418);
+                throw new ErrorHandler(statusMessage.isNotValidId, statusCodes.inNotValid);
             }
 
             const userId = await User.findById(user_id);
 
             if (!userId) {
-                throw new ErrorHandler('User not found', 404);
+                throw new ErrorHandler(statusMessage.notFound, statusCodes.notFound);
             }
 
             const normalizedUser = userNormalizator(userId);
@@ -46,28 +47,28 @@ module.exports = {
             next(e);
         }
     },
+    isEmailUnique: async (req, res, next) => {
+        try{
+            const {email} = req.body;
 
-    isUserBodyValid: (req, res, next) => {
-        try {
-            const {error, value} = userValidator.createUserValidator.validate(req.body);
+            const userByEmail = await User.findOne({email});
 
-            if (error) {
-                throw new Error(error.details[0].message);
+            if (userByEmail) {
+                throw new ErrorHandler(statusMessage.existEmail, statusCodes.alreadyExists);
             }
 
-            req.body = value;
             next();
-        } catch (e) {
+        } catch(e) {
             next(e);
         }
     },
 
-    updateUserBodyValidation: (req, res, next) => {
+    userBodyValidation: (userValidator) => (req, res, next) => {
         try {
-            const {error, value} = userValidator.updateUserValidator.validate(req.body);
+            const {error, value} = userValidator.validate(req.body);
 
             if (error) {
-                throw new Error(error.details[0].message);
+                throw new ErrorHandler(error.details[0].message, statusCodes.inNotValid);
             }
 
             req.body = value;
@@ -81,7 +82,7 @@ module.exports = {
             const {role} = req.body;
 
             if (!roleArr.includes(role)) {
-                throw new Error('Access denied');
+                throw new ErrorHandler(statusMessage.deniedAccess, statusCodes.forbidden);
             }
 
             next();

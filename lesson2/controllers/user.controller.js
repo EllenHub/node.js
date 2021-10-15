@@ -1,6 +1,8 @@
 const User = require('../db/User');
 const passwordService = require('../services/password.service');
 const { userNormalizator } = require('../utils/user.util');
+const { statusCodes } = require('../configs');
+const { statusMessage } = require('../configs');
 
 module.exports = {
     getUsers: async (req, res, next) => {
@@ -35,7 +37,7 @@ module.exports = {
 
             const normalizedNewUser = userNormalizator(newUser);
 
-            res.json(normalizedNewUser);
+            res.status(statusCodes.created).json(normalizedNewUser);
         } catch (e) {
             next(e);
         }
@@ -51,7 +53,7 @@ module.exports = {
 
             const userToUpdate = userNormalizator(updatedUser);
 
-            res.json(userToUpdate);
+            res.status(statusCodes.updated).json(userToUpdate);
         } catch (e) {
             next(e);
         }
@@ -63,7 +65,7 @@ module.exports = {
 
             await User.findByIdAndRemove(user_id);
 
-            res.sendStatus(204);
+            res.status(statusCodes.deleted).json(statusMessage.deleted);
         } catch (e) {
             next(e);
         }

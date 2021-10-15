@@ -1,8 +1,10 @@
 const User = require('../db/User');
-const {authValidator} = require('../validators/');
+const { authValidator } = require('../validators/');
 const passwordService = require('../services/password.service');
 const ErrorHandler = require("../errors/ErrorHandler");
-const {userNormalizator} = require('../utils/user.util');
+const { userNormalizator } = require('../utils/user.util');
+const { statusCodes } = require('../configs');
+const { statusMessage } = require('../configs');
 
 module.exports = {
     isEmailValid: async (req, res, next) => {
@@ -12,7 +14,7 @@ module.exports = {
             const userByEmail = await User.findOne({email});
 
             if (!userByEmail) {
-                throw new ErrorHandler('User does not exist', 404);
+                throw new ErrorHandler(statusMessage.isNotValid, statusCodes.inNotValid);
             }
 
             await passwordService.compare(password, userByEmail.password);
@@ -31,7 +33,7 @@ module.exports = {
             const {error, value} = authValidator.loginValidator.validate(req.body);
 
             if (error) {
-                throw new ErrorHandler('Email or password is wrong', 401);
+                throw new ErrorHandler( statusMessage.isNotValid, statusCodes.inNotValid);
             }
 
             req.body = value;
