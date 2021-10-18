@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 const { PASSWORD_REGEXP, EMAIL_REGEXP } = require('../consts/regex');
-const userRoles = require('../consts/user-roles.enum');
+const { userRolesEnum }= require('../consts');
 
 const createUserValidator = Joi.object({
     name: Joi
@@ -21,7 +21,7 @@ const createUserValidator = Joi.object({
         .required(),
     role: Joi
         .string()
-        .allow(...Object.values(userRoles))
+        .allow(...Object.values(userRolesEnum))
 });
 
 const updateUserValidator = Joi.object({

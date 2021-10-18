@@ -1,10 +1,10 @@
 const { Types } = require('mongoose');
 
+const ErrorHandler = require('../errors/ErrorHandler');
 const User = require('../db/User');
-const ErrorHandler = require("../errors/ErrorHandler");
 const { userNormalizator } = require('../utils/user.util');
-const { statusCodes } = require('../configs');
-const { statusMessage } = require('../configs');
+const { statusCodes, statusMessage } = require('../configs');
+
 
 module.exports = {
     createUserMiddleware: async (req, res, next) => {
@@ -68,7 +68,7 @@ module.exports = {
             const {error, value} = userValidator.validate(req.body);
 
             if (error) {
-                throw new ErrorHandler(error.details[0].message, statusCodes.inNotValid);
+                throw new ErrorHandler(error.details[0].message, statusCodes.isNotValid);
             }
 
             req.body = value;

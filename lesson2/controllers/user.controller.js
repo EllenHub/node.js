@@ -1,8 +1,7 @@
 const User = require('../db/User');
-const passwordService = require('../services/password.service');
+const { passwordService } = require('../services');
 const { userNormalizator } = require('../utils/user.util');
-const { statusCodes } = require('../configs');
-const { statusMessage } = require('../configs');
+const { statusCodes, statusMessage } = require('../configs');
 
 module.exports = {
     getUsers: async (req, res, next) => {

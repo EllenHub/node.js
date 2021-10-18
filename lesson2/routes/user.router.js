@@ -1,8 +1,8 @@
 const router = require('express').Router();
 
-const {ADMIN} = require("../consts/user-roles.enum");
+const {ADMIN} = require('../consts/user-roles.enum');
 const { userController } = require('../controllers/');
-const { userMiddleware }= require('../middelwares/');
+const { authMiddleware, userMiddleware }= require('../middelwares/');
 const { userValidator } = require('../validators/');
 
 router.get('/', userController.getUsers);
@@ -21,6 +21,7 @@ router.get('/:user_id',
     userController.getUserById);
 router.delete('/:user_id',
     userMiddleware.checkUserRole([ADMIN]),
+    authMiddleware.checkAccessToken,
     userMiddleware.isUserIdPresent,
     userController.deleteUser);
 

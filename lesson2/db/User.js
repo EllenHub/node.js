@@ -1,6 +1,7 @@
 const { Schema, model } = require('mongoose');
 
-const userRoles = require('../consts/user-roles.enum');
+const { userRolesEnum } = require('../consts');
+const { userModelEnum } = require('../consts');
 
 const userSchema = new Schema ({
     name: {
@@ -17,14 +18,14 @@ const userSchema = new Schema ({
     password: {
         type: String,
         required: true,
-        trim: true
+        trim: true,
     },
     role: {
         type: String,
-        default: userRoles.USER,
-        enum: Object.values(userRoles)
+        default: userRolesEnum.USER,
+        enum: Object.values(userRolesEnum)
     }
 }, {timestamps: true});
 
-module.exports = model('user', userSchema);
+module.exports = model(userModelEnum.USER, userSchema);
 

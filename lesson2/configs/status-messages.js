@@ -6,5 +6,6 @@ module.exports = {
     notExists:'User does not exist',
     isNotValid: 'Email or password is wrong',
     updated: 'User is updated',
-    deleted: 'User is deleted'
+    deleted: 'User is deleted',
+    invalidToken: 'Invalid token'
 };

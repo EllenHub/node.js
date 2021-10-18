@@ -7,5 +7,12 @@ router.post('/login',
     authMiddleware.validateLoginData,
     authMiddleware.isEmailValid,
     authController.userLogination);
+router.post('/refresh',
+    authMiddleware.checkRefreshToken,
+    authController.userLogination);
+router.post('/logout',
+    authMiddleware.checkAccessToken,
+    authController.logout
+);
 
 module.exports = router;
