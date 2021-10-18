@@ -8,11 +8,12 @@ const { userValidator } = require('../validators/');
 router.get('/', userController.getUsers);
 router.post('/',
     userMiddleware.userBodyValidation(userValidator.createUserValidator),
-    userMiddleware.createUserMiddleware,
+    userMiddleware.isEmailUnique,
     userController.createUser);
 
 router.patch('/:user_id',
     userMiddleware.userBodyValidation(userValidator.updateUserValidator),
+    authMiddleware.checkAccessToken,
     userMiddleware.isEmailUnique,
     userMiddleware.isUserIdPresent,
     userController.updateUser);

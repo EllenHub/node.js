@@ -46,9 +46,7 @@ module.exports = {
         try {
             const {user_id} = req.params;
 
-            const newData = req.body;
-
-            const updatedUser = await User.findByIdAndUpdate(user_id, newData);
+            const updatedUser = await User.findByIdAndUpdate(user_id, req.body, {new: true});
 
             const userToUpdate = userNormalizator(updatedUser);
 

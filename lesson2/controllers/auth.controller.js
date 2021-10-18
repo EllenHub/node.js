@@ -1,5 +1,4 @@
 const O_Auth = require('../db/O_Auth');
-const { AUTHORIZATION } = require('../consts/regex');
 const { jwtService } = require('../services');
 
 module.exports = {
@@ -24,7 +23,7 @@ module.exports = {
     },
     logout: async (req, res, next) => {
         try {
-            const token = req.get(AUTHORIZATION);
+            const { token } = req;
 
             await O_Auth.deleteOne({token});
 
