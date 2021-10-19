@@ -1,5 +1,5 @@
 const User = require('../db/User');
-const { passwordService } = require('../services');
+const { emailService, passwordService } = require('../services');
 const { userNormalizator } = require('../utils/user.util');
 const { statusCodes, statusMessage } = require('../configs');
 
@@ -28,11 +28,13 @@ module.exports = {
 
     createUser: async (req, res, next) => {
         try {
-            const {password} = req.body;
+            const {password, email} = req.body;
 
             const hashedPassword = await passwordService.hash(password);
 
             const newUser = await User.create({...req.body, password: hashedPassword});
+
+            await emailService.sendMail(email);
 
             const normalizedNewUser = userNormalizator(newUser);
 
