@@ -1,4 +1,5 @@
 module.exports = {
+    serverError: 500,
     isNotValid: 400,
     invalidToken: 401,
     forbidden: 403,
@@ -8,3 +9,4 @@ module.exports = {
     updated: 201,
     deleted: 204
 };
+
