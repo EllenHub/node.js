@@ -7,5 +7,6 @@ module.exports = {
     isNotValid: 'Email or password is wrong',
     updated: 'User is updated',
     deleted: 'User is deleted',
-    invalidToken: 'Invalid token'
+    invalidToken: 'Invalid token',
+    wrongTemplate: 'Wrong template name'
 };

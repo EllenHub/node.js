@@ -1,10 +1,13 @@
 const O_Auth = require('../db/O_Auth');
+const { LOGIN } = require('../consts/email-actions.enum');
+const { emailService } = require('../services');
 const { jwtService } = require('../services');
 
 module.exports = {
     userLogination: async (req, res, next) => {
         try {
             const {user} = req;
+            const {email, name} = req.body;
 
             const tokenPair = jwtService.generatePairToken();
 
@@ -12,6 +15,8 @@ module.exports = {
                 ...tokenPair,
                 user_id: user._id
             });
+
+            await emailService.sendMail(email, LOGIN,{userName: name});
 
             res.json({
                 user,
