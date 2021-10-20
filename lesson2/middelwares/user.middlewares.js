@@ -2,7 +2,6 @@ const { Types } = require('mongoose');
 
 const ErrorHandler = require('../errors/ErrorHandler');
 const User = require('../db/User');
-const { userNormalizator } = require('../utils/user.util');
 const { statusCodes, statusMessage } = require('../configs');
 
 module.exports = {
@@ -13,7 +12,7 @@ module.exports = {
             const isValid = Types.ObjectId.isValid(user_id);
 
             if (!isValid) {
-                throw new ErrorHandler(statusMessage.isNotValidId, statusCodes.inNotValid);
+                throw new ErrorHandler(statusMessage.isNotValidId, statusCodes.isNotValid);
             }
 
             const userId = await User.findById(user_id);
@@ -22,9 +21,9 @@ module.exports = {
                 throw new ErrorHandler(statusMessage.notFound, statusCodes.notFound);
             }
 
-            const normalizedUser = userNormalizator(userId);
-
-            req.user = normalizedUser;
+            // const normalizedUser = userNormalizator(userId);
+            req.user = userId;
+            // req.user = normalizedUser;
             next();
         } catch (e) {
             next(e);
@@ -62,7 +61,7 @@ module.exports = {
     },
     checkUserRole: (roleArr = []) => (req, res, next) => {
         try {
-            const {role} = req.body;
+            const {role} = req.user;
 
             if (!roleArr.includes(role)) {
                 throw new ErrorHandler(statusMessage.deniedAccess, statusCodes.forbidden);

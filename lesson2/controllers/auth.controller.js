@@ -4,7 +4,7 @@ const { emailService } = require('../services');
 const { jwtService } = require('../services');
 
 module.exports = {
-    userLogination: async (req, res, next) => {
+    login: async (req, res, next) => {
         try {
             const {user} = req;
             const {email, name} = req.body;
@@ -36,5 +36,24 @@ module.exports = {
         } catch (e) {
             next(e);
         }
-    }
+    },
+    refresh: async (req, res, next) => {
+        try {
+            const {user} = req;
+
+            const tokenPair = jwtService.generatePairToken();
+
+            await O_Auth.create({
+                ...tokenPair,
+                user_id: user._id
+            });
+
+            res.json({
+                user,
+                ...tokenPair,
+            });
+        } catch (e) {
+            next(e);
+        }
+    },
 };

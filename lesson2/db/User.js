@@ -20,6 +20,11 @@ const userSchema = new Schema ({
         required: true,
         trim: true,
     },
+    isActive: {
+        type: Boolean,
+        default: false,
+        required: true
+    },
     role: {
         type: String,
         default: userRolesEnum.USER,

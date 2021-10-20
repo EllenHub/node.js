@@ -1,5 +1,5 @@
 const { emailService, passwordService } = require('../services');
-const User = require('../db/User');
+const { User, O_Auth } = require('../db/');
 const { userNormalizator } = require('../utils/user.util');
 const { statusCodes, statusMessage } = require('../configs');
 const { WELCOME, UPDATE, DELETE } = require('../consts/email-actions.enum');
@@ -67,7 +67,9 @@ module.exports = {
             const {user_id} = req.params;
             const {email, name} = req.body;
 
-            await User.findByIdAndRemove(user_id);
+            await User.deleteOne({user_id});
+
+            await O_Auth.deleteMany({user_id});
 
             await emailService.sendMail(email, DELETE,{userName: name});
 

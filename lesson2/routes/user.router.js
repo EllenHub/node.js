@@ -21,9 +21,9 @@ router.get('/:user_id',
     userMiddleware.isUserIdPresent,
     userController.getUserById);
 router.delete('/:user_id',
-    userMiddleware.checkUserRole([ADMIN]),
     authMiddleware.checkAccessToken,
     userMiddleware.isUserIdPresent,
+    userMiddleware.checkUserRole([ADMIN]),
     userController.deleteUser);
 
 module.exports = router;

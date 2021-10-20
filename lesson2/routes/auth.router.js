@@ -6,10 +6,10 @@ const { authMiddleware } = require('../middelwares/');
 router.post('/login',
     authMiddleware.validateLoginData,
     authMiddleware.isEmailValid,
-    authController.userLogination);
+    authController.login);
 router.post('/refresh',
     authMiddleware.checkRefreshToken,
-    authController.userLogination);
+    authController.refresh);
 router.post('/logout',
     authMiddleware.checkAccessToken,
     authController.logout
