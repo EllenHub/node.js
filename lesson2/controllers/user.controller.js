@@ -67,7 +67,7 @@ module.exports = {
             const {user_id} = req.params;
             const {email, name} = req.body;
 
-            await User.deleteOne({user_id});
+            await User.findByIdAndRemove(user_id);
 
             await O_Auth.deleteMany({user_id});
 
