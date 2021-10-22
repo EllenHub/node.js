@@ -21,9 +21,7 @@ module.exports = {
                 throw new ErrorHandler(statusMessage.notFound, statusCodes.notFound);
             }
 
-            // const normalizedUser = userNormalizator(userId);
             req.user = userId;
-            // req.user = normalizedUser;
             next();
         } catch (e) {
             next(e);

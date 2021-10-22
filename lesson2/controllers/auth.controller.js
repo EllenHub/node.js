@@ -1,7 +1,11 @@
-const O_Auth = require('../db/O_Auth');
-const { LOGIN } = require('../consts/email-actions.enum');
-const { emailService } = require('../services');
-const { jwtService } = require('../services');
+const {ActionToken, O_Auth, User} = require('../db');
+const ActionTokenTypeEnum = require('../consts/action-token-type.enum');
+const ErrorHandler = require('../errors/ErrorHandler');
+const EmailActionEnum = require('../consts/email-actions.enum');
+const {userNormalizator} = require('../utils/user.util');
+const {statusMessage, statusCodes} = require('../configs');
+const {LOGIN, RESET_NEW_PASSWORD} = require('../consts/email-actions.enum');
+const {jwtService, emailService, passwordService} = require('../services');
 
 module.exports = {
     login: async (req, res, next) => {
@@ -16,7 +20,7 @@ module.exports = {
                 user_id: user._id
             });
 
-            await emailService.sendMail(email, LOGIN,{userName: name});
+            await emailService.sendMail(email, LOGIN, {userName: name});
 
             res.json({
                 user,
@@ -28,7 +32,7 @@ module.exports = {
     },
     logout: async (req, res, next) => {
         try {
-            const { token } = req;
+            const {token} = req;
 
             await O_Auth.deleteOne({token});
 
@@ -56,4 +60,55 @@ module.exports = {
             next(e);
         }
     },
+    forgotPasswordEmail: async (req, res, next) => {
+        try {
+            const {email} = req.body;
+
+            const user = await User.findOne({email});
+
+            if (!user) {
+                throw new ErrorHandler(statusMessage.notFound, statusCodes.notFound);
+            }
+            const actionToken = jwtService.generateActionToken(ActionTokenTypeEnum.FORGOT_PASSWORD);
+
+            await ActionToken.create({
+                token: actionToken,
+                token_type: ActionTokenTypeEnum.FORGOT_PASSWORD,
+                user_id: user._id
+            });
+
+            await emailService.sendMail(email, EmailActionEnum.FORGOT_PASSWORD,
+                {forgotPasswordUrl: `http://localhost:3000/passwordForgot?token=${actionToken}`});
+            res.json({
+                actionToken,
+                user_id: user._id
+            });
+        } catch (e) {
+            next(e);
+        }
+    },
+    setNewPasswordAfterForgot: async (req, res, next) => {
+        try {
+
+            const { _id, email, name} = req.user;
+            const {password} = req.body;
+            
+            const hashedPassword = await passwordService.hash(password);
+
+            const userWithNewPassword = await User.findByIdAndUpdate(
+                {_id},
+                { $set: { password: hashedPassword } },
+                {new: true}
+            );
+            const normalizedUser = userNormalizator(userWithNewPassword);
+
+            await emailService.sendMail(email, RESET_NEW_PASSWORD, {userName: name});
+            
+            await
+
+            res.json(normalizedUser);
+        } catch (e) {
+            next(e);
+        }
+    }
 };

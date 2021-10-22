@@ -12,7 +12,11 @@ router.post('/refresh',
     authController.refresh);
 router.post('/logout',
     authMiddleware.checkAccessToken,
-    authController.logout
-);
+    authController.logout);
+router.post('/password/forgot',
+    authController.forgotPasswordEmail);
+router.patch('/password/forgot/set',
+    authMiddleware.checkActiveToken,
+    authController.setNewPasswordAfterForgot);
 
 module.exports = router;

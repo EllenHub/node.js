@@ -8,5 +8,6 @@ module.exports = {
     updated: 'User is updated',
     deleted: 'User is deleted',
     invalidToken: 'Invalid token',
-    wrongTemplate: 'Wrong template name'
+    wrongTemplate: 'Wrong template name',
+    wrongTokenType: 'Wrong token type'
 };
