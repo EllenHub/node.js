@@ -48,7 +48,7 @@ module.exports = {
         try {
             const token = req.get(AUTHORIZATION);
 
-            await jwtService.verifyToken(token);
+            await jwtService.verifyToken(token, tokenTypeEnum.ACCESS);
 
             if (!token) {
                 throw new ErrorHandler(statusCodes.invalidToken, statusMessage.invalidToken);
