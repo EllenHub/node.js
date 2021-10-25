@@ -2,6 +2,7 @@ const router = require('express').Router();
 
 const { authController } = require('../controllers/');
 const { authMiddleware } = require('../middelwares/');
+const {authValidator} = require('../validators');
 
 router.post('/login',
     authMiddleware.validateLoginData,
@@ -14,8 +15,10 @@ router.post('/logout',
     authMiddleware.checkAccessToken,
     authController.logout);
 router.post('/password/forgot',
+    authMiddleware.isEmailValid,
     authController.forgotPasswordEmail);
 router.patch('/password/forgot/set',
+    authValidator.authPasswordValidator,
     authMiddleware.checkActiveToken,
     authController.setNewPasswordAfterForgot);
 

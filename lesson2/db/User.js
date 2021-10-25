@@ -1,9 +1,10 @@
-const { Schema, model } = require('mongoose');
+const {passwordService} = require('../services');
+const {Schema, model} = require('mongoose');
 
-const { userRolesEnum } = require('../consts');
-const { userModelEnum } = require('../consts');
+const {userRolesEnum} = require('../consts');
+const {userModelEnum} = require('../consts');
 
-const userSchema = new Schema ({
+const userSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -31,6 +32,14 @@ const userSchema = new Schema ({
         enum: Object.values(userRolesEnum)
     }
 }, {timestamps: true});
+
+userSchema.statics = {
+    async createUserWithHashedPassword(userObject) {
+        const hashPassword = await passwordService.hash(userObject.password);
+
+        return this.create({...userObject, password: hashPassword});
+    }
+};
 
 module.exports = model(userModelEnum.USER, userSchema);
 

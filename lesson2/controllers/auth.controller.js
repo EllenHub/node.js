@@ -80,7 +80,6 @@ module.exports = {
             await emailService.sendMail(email, EmailActionEnum.FORGOT_PASSWORD,
                 {forgotPasswordUrl: `http://localhost:3000/passwordForgot?token=${actionToken}`});
             res.json({
-                actionToken,
                 user_id: user._id
             });
         } catch (e) {
@@ -100,13 +99,13 @@ module.exports = {
                 { $set: { password: hashedPassword } },
                 {new: true}
             );
-            const normalizedUser = userNormalizator(userWithNewPassword);
+            await userNormalizator(userWithNewPassword);
 
             await emailService.sendMail(email, RESET_NEW_PASSWORD, {userName: name});
             
             await
 
-            res.json(normalizedUser);
+            res.json('ok');
         } catch (e) {
             next(e);
         }

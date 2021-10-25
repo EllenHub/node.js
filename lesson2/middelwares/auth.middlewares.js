@@ -43,16 +43,31 @@ module.exports = {
             next(e);
         }
     },
+    authResetPasswordValidator:(req, res, next) => {
+        try {
+            const {error, value} = authValidator.authPasswordValidator.validate(req.body);
+
+            if (error) {
+                throw new ErrorHandler(statusMessage.isNotValid, statusCodes.isNotValid);
+            }
+
+            req.body = value;
+            next();
+        } catch (e) {
+            next(e);
+        }},
 
     checkAccessToken: async (req, res, next) => {
         try {
             const token = req.get(AUTHORIZATION);
 
             await jwtService.verifyToken(token);
+            await jwtService.verifyToken(token,tokenTypeEnum.ACCESS);
 
             if (!token) {
                 throw new ErrorHandler(statusCodes.invalidToken, statusMessage.invalidToken);
             }
+
 
             const tokenResponse = await O_Auth.findOne({access_token: token});
 

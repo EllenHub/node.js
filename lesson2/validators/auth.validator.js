@@ -13,6 +13,14 @@ const loginValidator = Joi.object({
         .required()
 });
 
+const authPasswordValidator = Joi.object({
+    password: Joi
+        .string()
+        .regex(PASSWORD_REGEXP)
+        .required()
+});
+
 module.exports = {
-    loginValidator
+    loginValidator,
+    authPasswordValidator
 };
