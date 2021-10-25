@@ -79,9 +79,8 @@ module.exports = {
 
             await emailService.sendMail(email, EmailActionEnum.FORGOT_PASSWORD,
                 {forgotPasswordUrl: `http://localhost:3000/passwordForgot?token=${actionToken}`});
-            res.json({
-                user_id: user._id
-            });
+
+            res.json({actionToken});
         } catch (e) {
             next(e);
         }
@@ -102,10 +101,8 @@ module.exports = {
             await userNormalizator(userWithNewPassword);
 
             await emailService.sendMail(email, RESET_NEW_PASSWORD, {userName: name});
-            
-            await
 
-            res.json('ok');
+            res.json('Successful');
         } catch (e) {
             next(e);
         }

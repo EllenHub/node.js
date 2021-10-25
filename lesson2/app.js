@@ -18,7 +18,6 @@ const ErrorHandler = require('./errors/ErrorHandler');
 const checkDefaultData = require('./utils/default-data.util');
 
 const app = express();
-
 mongoose.connect(MONGO_CONNECT_URL);
 
 app.use(helmet());

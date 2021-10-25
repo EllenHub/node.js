@@ -1,14 +1,14 @@
-const { AUTHORIZATION } = require('../consts/regex');
-const { authValidator } = require('../validators/');
-const { ActionToken,O_Auth, User } = require('../db');
-const { passwordService, jwtService } = require('../services');
+const {AUTHORIZATION} = require('../consts/regex');
+const {authValidator} = require('../validators/');
+const {ActionToken, O_Auth, User} = require('../db');
+const {passwordService, jwtService} = require('../services');
 const ErrorHandler = require('../errors/ErrorHandler');
-const { userNormalizator } = require('../utils/user.util');
-const { statusCodes, statusMessage } = require('../configs');
-const { tokenTypeEnum } = require('../consts');
+const {userNormalizator} = require('../utils/user.util');
+const {statusCodes, statusMessage} = require('../configs');
+const {tokenTypeEnum} = require('../consts');
 
 module.exports = {
-    isEmailValid: async (req, res, next) => {
+    isDataValid: async (req, res, next) => {
         try {
             const {email, password} = req.body;
 
@@ -23,6 +23,21 @@ module.exports = {
             const normalizedUser = userNormalizator(userByEmail);
 
             req.user = normalizedUser;
+            next();
+        } catch (e) {
+            next(e);
+        }
+    },
+    isEmailValid: async (req, res, next) => {
+        try {
+            const {email} = req.body;
+
+            const userByEmail = await User.findOne({email});
+
+            if (!userByEmail) {
+                throw new ErrorHandler(statusMessage.isNotValid, statusCodes.isNotValid);
+            }
+
             next();
         } catch (e) {
             next(e);
@@ -43,7 +58,7 @@ module.exports = {
             next(e);
         }
     },
-    authResetPasswordValidator:(req, res, next) => {
+    authResetPasswordValidator: (req, res, next) => {
         try {
             const {error, value} = authValidator.authPasswordValidator.validate(req.body);
 
@@ -55,14 +70,14 @@ module.exports = {
             next();
         } catch (e) {
             next(e);
-        }},
+        }
+    },
 
     checkAccessToken: async (req, res, next) => {
         try {
             const token = req.get(AUTHORIZATION);
 
-            await jwtService.verifyToken(token);
-            await jwtService.verifyToken(token,tokenTypeEnum.ACCESS);
+            await jwtService.verifyToken(token, tokenTypeEnum.ACCESS);
 
             if (!token) {
                 throw new ErrorHandler(statusCodes.invalidToken, statusMessage.invalidToken);
