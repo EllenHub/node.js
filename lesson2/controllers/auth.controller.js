@@ -80,7 +80,7 @@ module.exports = {
             await emailService.sendMail(email, EmailActionEnum.FORGOT_PASSWORD,
                 {forgotPasswordUrl: `http://localhost:3000/passwordForgot?token=${actionToken}`});
 
-            res.json({actionToken});
+            res.json('Email has been sent');
         } catch (e) {
             next(e);
         }
