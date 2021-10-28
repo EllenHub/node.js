@@ -1,4 +1,4 @@
-const {passwordService} = require('../services');
+const passwordService = require('../services/password.service');
 const {Schema, model} = require('mongoose');
 
 const {userRolesEnum} = require('../consts');
@@ -30,6 +30,9 @@ const userSchema = new Schema({
         type: String,
         default: userRolesEnum.USER,
         enum: Object.values(userRolesEnum)
+    },
+    age: {
+        type: Number
     }
 }, {timestamps: true});
 

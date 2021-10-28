@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+const swaggerUI = require('swagger-ui-express');
 
 require('dotenv').config();
 
@@ -16,6 +17,7 @@ const startCron = require('./cron');
 const {authRouter, userRouter} = require('./routes');
 const ErrorHandler = require('./errors/ErrorHandler');
 const checkDefaultData = require('./utils/default-data.util');
+const swaggerJSON = require('./docs/swagger.json');
 
 const app = express();
 mongoose.connect(MONGO_CONNECT_URL);
@@ -35,6 +37,10 @@ if (NODE_ENV === 'dev') {
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
+
+app.use('/docs',
+    swaggerUI.serve,
+    swaggerUI.setup(swaggerJSON));
 
 app.use('/auth', authRouter);
 app.use('/users', userRouter);

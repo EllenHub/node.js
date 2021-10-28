@@ -1,4 +1,4 @@
-const { emailService} = require('../services');
+const { emailService, userService} = require('../services');
 const { User, O_Auth } = require('../db/');
 const { userNormalizator } = require('../utils/user.util');
 const { statusCodes, statusMessage } = require('../configs');
@@ -7,7 +7,7 @@ const { WELCOME, UPDATE, DELETE } = require('../consts/email-actions.enum');
 module.exports = {
     getUsers: async (req, res, next) => {
         try {
-            const users = await User.find();
+            const users = await userService.getAllUsers(req.query);
 
             const usersToReturn = users.map((item) => userNormalizator(item));
 
