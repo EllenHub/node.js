@@ -1,4 +1,4 @@
-const { emailService, userService} = require('../services');
+const { emailService, userService, s3Service } = require('../services');
 const { User, O_Auth } = require('../db/');
 const { userNormalizator } = require('../utils/user.util');
 const { statusCodes, statusMessage } = require('../configs');
@@ -31,11 +31,20 @@ module.exports = {
         try {
             const {email, name} = req.body;
 
-            const newUser = await User.createUserWithHashedPassword(req.body);
+            let newUser = await User.createUserWithHashedPassword(req.body);
 
             await emailService.sendMail(email, WELCOME,{userName: name});
 
             const normalizedNewUser = userNormalizator(newUser);
+
+            const {avatar} = req.files;
+
+            if(avatar) {
+                const uploadInfo = await s3Service.uploadImage(avatar, 'user',newUser._id.toString());
+
+                newUser = await User.findByIdAndUpdate(newUser._id, {avatar: uploadInfo.Location}, {new: true});
+
+            }
 
             res.status(statusCodes.created).json(normalizedNewUser);
         } catch (e) {

@@ -46,6 +46,7 @@ module.exports = {
     userBodyValidation: (userValidator) => (req, res, next) => {
         try {
             const {error, value} = userValidator.validate(req.body);
+            console.log(req.files);
 
             if (error) {
                 throw new ErrorHandler(error.details[0].message, statusCodes.isNotValid);
